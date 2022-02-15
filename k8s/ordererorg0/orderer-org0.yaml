@@ -16,14 +16,14 @@ spec:
     spec:
       containers:
         - name: orderer-org0
-          image: hyperledger/fabric-orderer:2.2
+          image: hyperledger/fabric-orderer:2.4
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /var/hyperledger/production/orderer
               name: orderer-persistent-mount
             - mountPath: /tmp/hyperledger/shared
               name: shared-volume
-            - mountPath: /tmp/hyperledger/org0/orderer
+            - mountPath: /tmp/hyperledger/orderer/org0
               name: orderer-mount
           env:
             - name: ORDERER_HOME
@@ -37,17 +37,17 @@ spec:
             - name: ORDERER_GENERAL_GENESISFILE
               value: "/tmp/hyperledger/shared/channel/genesis.block"
             - name: ORDERER_GENERAL_LOCALMSPID
-              value: "org0MSP"
+              value: "ordererOrg0MSP"
             - name: ORDERER_GENERAL_LOCALMSPDIR
-              value: "/tmp/hyperledger/org0/orderer/msp"
+              value: "/tmp/hyperledger/orderer/org0/msp"
             - name: ORDERER_GENERAL_TLS_ENABLED
               value: "true"
             - name: ORDERER_GENERAL_TLS_CERTIFICATE
-              value: "/tmp/hyperledger/org0/orderer/tls-msp/signcerts/cert.pem"
+              value: "/tmp/hyperledger/orderer/org0/tls-msp/signcerts/cert.pem"
             - name: ORDERER_GENERAL_TLS_PRIVATEKEY
-              value: "/tmp/hyperledger/org0/orderer/tls-msp/keystore/key.pem"
+              value: "/tmp/hyperledger/orderer/org0/tls-msp/keystore/key.pem"
             - name: ORDERER_GENERAL_TLS_ROOTCAS
-              value: "[/tmp/hyperledger/org0/orderer/tls-msp/tlscacerts/tls-tls-ca-hlf-7052.pem]"
+              value: "[/tmp/hyperledger/orderer/org0/tls-msp/tlscacerts/tls-tls-ca-hlf-7052.pem]"
             - name: ORDERER_GENERAL_LOGLEVEL
               value: "debug"
             - name: FABRIC_LOGGING_SPEC
@@ -55,12 +55,12 @@ spec:
             - name: ORDERER_DEBUG_BROADCASTTRACEDIR
               value: "data/logs"
             - name: ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY
-              value: "/tmp/hyperledger/org0/orderer/tls-msp/keystore/key.pem"
+              value: "/tmp/hyperledger/orderer/org0/tls-msp/keystore/key.pem"
             - name: ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE
-              value: "/tmp/hyperledger/org0/orderer/tls-msp/signcerts/cert.pem"
+              value: "/tmp/hyperledger/orderer/org0/tls-msp/signcerts/cert.pem"
       initContainers:
         - name: fabric-ca
-          image: hyperledger/fabric-ca:1.4.7
+          image: hyperledger/fabric-ca:1.5
           imagePullPolicy: IfNotPresent
           command: ["bash", "./tmp/hyperledger/scripts/startNetwork/enrollJobs/enrollOrdererOrg0.sh"]
           volumeMounts:
@@ -68,12 +68,12 @@ spec:
               name: shared-volume
             - mountPath: /tmp/hyperledger/scripts
               name: scripts
-            - mountPath: /tmp/hyperledger/org0/orderer
+            - mountPath: /tmp/hyperledger/orderer/org0
               name: orderer-mount
             - mountPath: /tmp/secrets/tls-ca
               name: tls-ca-cert
               readOnly: true
-            - mountPath: /tmp/secrets/rca-org0
+            - mountPath: /tmp/secrets/rca-orderer-org0
               name: rca-org0-cert
               readOnly: true
           env:
@@ -99,18 +99,18 @@ spec:
                 secretKeyRef:
                   name: credentials.orderer-org0
                   key: password
-            - name: ADMIN_ORG0_IDENTITY_USER
+            - name: ADMIN_ORDERER_ORG0_IDENTITY_USER
               valueFrom:
                 secretKeyRef:
-                  name: credentials.admin-org0
+                  name: credentials.admin-orderer-org0
                   key: username
-            - name: ADMIN_ORG0_IDENTITY_PASSWORD
+            - name: ADMIN_ORDERER_ORG0_IDENTITY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials.admin-org0
+                  name: credentials.admin-orderer-org0
                   key: password
         - name: fabric-tools
-          image: hyperledger/fabric-tools:2.2.1
+          image: hyperledger/fabric-tools:2.4
           imagePullPolicy: IfNotPresent
           command: ["bash", "/tmp/hyperledger/scripts/startNetwork/createGenesisBlock.sh"]
           volumeMounts:
@@ -124,14 +124,14 @@ spec:
             - mountPath: /tmp/secrets/tls-ca
               name: tls-ca-cert
               readOnly: true
-            - mountPath: /tmp/secrets/rca-org0
-              name: rca-org0-cert
+            - mountPath: /tmp/secrets/rca-orderer-org0
+              name: rca-orderer-org0-cert
               readOnly: true
-            - mountPath: /tmp/secrets/rca-org1
-              name: rca-org1-cert
+            - mountPath: /tmp/secrets/rca-hospital1
+              name: rca-hospital1-cert
               readOnly: true
-            - mountPath: /tmp/secrets/rca-org2
-              name: rca-org2-cert
+            - mountPath: /tmp/secrets/rca-hospital2
+              name: rca-hospital2-cert
               readOnly: true
       volumes:
         - name: orderer-persistent-mount
@@ -155,12 +155,12 @@ spec:
         - name: rca-org0-cert
           secret:
             secretName: cert.rca-org0
-        - name: rca-org1-cert
+        - name: rca-hospital-cert
           secret:
-            secretName: cert.rca-org1
-        - name: rca-org2-cert
+            secretName: cert.rca-hospital1
+        - name: rca-hospital2-cert
           secret:
-            secretName: cert.rca-org2
+            secretName: cert.rca-hospital2
 ---
 apiVersion: v1
 kind: Service

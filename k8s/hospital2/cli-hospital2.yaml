@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cli-org2
+  name: cli-hospital2
   namespace: hlf
   labels:
-    app: cli-org2
+    app: cli-hospital2
 spec:
   selector:
     matchLabels:
-      app: cli-org2
+      app: cli-hospital2
   template:
     metadata:
       labels:
-        app: cli-org2
+        app: cli-hospital2
     spec:
       containers:
-        - name: cli-org2
-          image: hyperledger/fabric-tools:2.2
+        - name: cli-hospital2
+          image: hyperledger/fabric-tools:2.4
           imagePullPolicy: IfNotPresent
           tty: true
           command: ["sh"]
@@ -26,7 +26,7 @@ spec:
               name: shared-volume
             - mountPath: /tmp/hyperledger/chaincode
               name: chaincode-mount
-            - mountPath: /tmp/hyperledger/org2/admin
+            - mountPath: /tmp/hyperledger/hospital2/admin
               name: pod-data
             - mountPath: /tmp/secrets/tls-ca
               name: tls-ca-cert
@@ -39,20 +39,20 @@ spec:
             # - name: FABRIC_LOGGING_SPEC
             #   value: "DEBUG"
             - name: CORE_PEER_ID
-              value: "cli-org2"
+              value: "cli-hospital2"
             - name: CORE_PEER_ADDRESS
-              value: "peer1-org2:7051"
+              value: "peer0-hospital2:7051"
             - name: CORE_PEER_LOCALMSPID
-              value: "org2MSP"
+              value: "hospital2MSP"
             - name: CORE_PEER_TLS_ENABLED
               value: "true"
             - name: CORE_PEER_TLS_ROOTCERT_FILE
               value: "/tmp/secrets/tls-ca/cert.pem"
             - name: CORE_PEER_MSPCONFIGPATH
-              value: "/tmp/hyperledger/org2/admin/msp"
+              value: "/tmp/hyperledger/hospital2/admin/msp"
       initContainers:
         - name: fabric-ca
-          image: hyperledger/fabric-ca:1.4.7
+          image: hyperledger/fabric-ca:1.5
           imagePullPolicy: IfNotPresent
           command: ["bash", "./tmp/hyperledger/scripts/startNetwork/enrollJobs/enrollAdmin.sh"]
           volumeMounts:
@@ -60,10 +60,10 @@ spec:
               name: shared-volume
             - mountPath: /tmp/hyperledger/scripts
               name: scripts
-            - mountPath: /tmp/hyperledger/org2/admin
+            - mountPath: /tmp/hyperledger/hospital2/admin
               name: pod-data
-            - mountPath: /tmp/secrets/rca-org2
-              name: rca-org2-cert
+            - mountPath: /tmp/secrets/rca-hospital2
+              name: rca-hospital2-cert
               readOnly: true
           env:
             - name: FABRIC_CA_SERVER_DEBUG
@@ -75,12 +75,12 @@ spec:
             - name: ADMIN_IDENTITY_USER
               valueFrom:
                 secretKeyRef:
-                  name: credentials.admin-org2
+                  name: credentials.admin-hospital2
                   key: username
             - name: ADMIN_IDENTITY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials.admin-org2
+                  name: credentials.admin-hospital2
                   key: password
 
       volumes:
@@ -101,6 +101,6 @@ spec:
         - name: tls-ca-cert
           secret:
             secretName: cert.tls-ca
-        - name: rca-org2-cert
+        - name: rca-hospital2-cert
           secret:
-            secretName: cert.rca-org2
+            secretName: cert.rca-hospital2

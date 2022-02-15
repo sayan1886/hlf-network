@@ -1,38 +1,38 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: peer2-org1
+  name: peer0-hospital2
   namespace: hlf
   labels:
-    app: peer2-org1
+    app: peer0-hospital2
 spec:
   selector:
     matchLabels:
-      app: peer2-org1
+      app: peer0-hospital2
   template:
     metadata:
       labels:
-        app: peer2-org1
+        app: peer0-hospital2
     spec:
       containers:
-        - name: peer2-org1
-          image: hyperledger/fabric-peer:2.2
+        - name: peer0-hospital2
+          image: hyperledger/fabric-peer:2.4
           volumeMounts:
-            - mountPath: /tmp/hyperledger/org1/peer2
-              name: peer2-org1-mount
+            - mountPath: /tmp/hyperledger/hospital2/peer0
+              name: peer0-hospital2-mount
             - mountPath: /var/hyperledger/production
               name: peer-persistent-mount
           env:
             - name: CORE_PEER_ID
-              value: "peer2-org1"
+              value: "peer0-hospital2"
             - name: CORE_PEER_LISTENADDRESS
               value: "0.0.0.0:7051"
             - name: CORE_PEER_ADDRESS
-              value: "peer2-org1:7051"
+              value: "peer0-hospital2:7051"
             - name: CORE_PEER_LOCALMSPID
-              value: "org1MSP"
+              value: "hospital2MSP"
             - name: CORE_PEER_MSPCONFIGPATH
-              value: "/tmp/hyperledger/org1/peer2/msp"
+              value: "/tmp/hyperledger/hospital2/peer0/msp"
             - name: CORE_VM_ENDPOINT
               value: "tcp://localhost:2375"
             - name: FABRIC_LOGGING_SPEC
@@ -40,23 +40,23 @@ spec:
             - name: CORE_PEER_TLS_ENABLED
               value: "true"
             - name: CORE_PEER_TLS_CERT_FILE
-              value: "/tmp/hyperledger/org1/peer2/tls-msp/signcerts/cert.pem"
+              value: "/tmp/hyperledger/hospital2/peer0/tls-msp/signcerts/cert.pem"
             - name: CORE_PEER_TLS_KEY_FILE
-              value: "/tmp/hyperledger/org1/peer2/tls-msp/keystore/key.pem"
+              value: "/tmp/hyperledger/hospital2/peer0/tls-msp/keystore/key.pem"
             - name: CORE_PEER_TLS_ROOTCERT_FILE
-              value: "/tmp/hyperledger/org1/peer2/tls-msp/tlscacerts/tls-tls-ca-hlf-7052.pem"
+              value: "/tmp/hyperledger/hospital2/peer0/tls-msp/tlscacerts/tls-tls-ca-hlf-7052.pem"
             - name: CORE_PEER_GOSSIP_USELEADERELECTION
               value: "true"
             - name: CORE_PEER_GOSSIP_ORGLEADER
               value: "false"
             - name: CORE_PEER_GOSSIP_EXTERNALENDPOINT
-              value: "peer2-org1:7051"
+              value: "peer0-hospital2:7051"
             - name: CORE_PEER_BOOTSTRAP
-              value: "peer2-org1:7051"
+              value: "peer0-hospital2:7051"
             - name: CORE_PEER_GOSSIP_SKIPHANDSHAKE
               value: "true"
             - name: CORE_PEER_CHAINCODEADDRESS
-              value: "peer2-org1:7052"
+              value: "peer0-hospital2:7052"
             - name: CORE_PEER_CHAINCODELISTENADDRESS
               value: "0.0.0.0:7052"
             - name: CORE_LEDGER_STATE_STATEDATABASE
@@ -77,7 +77,7 @@ spec:
               name: dind-persistent-mount
       initContainers:
         - name: fabric-ca
-          image: hyperledger/fabric-ca:1.4.7
+          image: hyperledger/fabric-ca:1.5
           imagePullPolicy: IfNotPresent
           command: ["bash", "./tmp/hyperledger/scripts/startNetwork/enrollJobs/enrollPeer.sh"]
           volumeMounts:
@@ -85,85 +85,85 @@ spec:
               name: scripts
             - mountPath: /tmp/hyperledger/shared
               name: shared-volume
-            - mountPath: /tmp/hyperledger/org1/peer2
-              name: peer2-org1-mount
+            - mountPath: /tmp/hyperledger/hospital2/peer0
+              name: peer0-hospital2-mount
             - mountPath: /tmp/secrets/tls-ca
               name: tls-ca-cert
               readOnly: true
-            - mountPath: /tmp/secrets/rca-org1
-              name: rca-org1-cert
+            - mountPath: /tmp/secrets/rca-hospital2
+              name: rca-hospital2-cert
               readOnly: true
           env:
             - name: FABRIC_CA_SERVER_DEBUG
               value: "true"
             - name: PEER_NUM
-              value: "2"
-            - name: ORG_NUM
               value: "1"
+            - name: ORG_NUM
+              value: "2"
             - name: ORG_CA_PORT
               value: "7052"
             - name: PEER_TLS_IDENTITY_USER
               valueFrom:
                 secretKeyRef:
-                  name: credentials.tls.peer2-org1
+                  name: credentials.tls.peer0-hospital2
                   key: username
             - name: PEER_TLS_IDENTITY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials.tls.peer2-org1
+                  name: credentials.tls.peer0-hospital2
                   key: password
             - name: PEER_IDENTITY_USER
               valueFrom:
                 secretKeyRef:
-                  name: credentials.peer2-org1
+                  name: credentials.peer0-hospital2
                   key: username
             - name: PEER_IDENTITY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials.peer2-org1
+                  name: credentials.peer0-hospital2
                   key: password
-
+            
       volumes:
         - name: peer-persistent-mount
           persistentVolumeClaim:
-            claimName: peer2-org1-pvc
+              claimName: peer0-hospital2-pvc
         - name: couchdb-persistent-mount
           persistentVolumeClaim:
-            claimName: peer2-org1-couchdb-pvc
+              claimName: peer0-hospital2-couchdb-pvc
         - name: dind-persistent-mount
           persistentVolumeClaim:
-            claimName: peer2-org1-dind-pvc
+              claimName: peer0-hospital2-dind-pvc
         - name: scripts
           hostPath:
             path: /mnt/hyperledger/scripts
         - name: shared-volume
           hostPath:
             path: /mnt/hyperledger/shared
-        - name: peer2-org1-mount
+        - name: peer0-hospital2-mount
           emptyDir: {}
         - name: tls-ca-cert
           secret:
             secretName: cert.tls-ca
-        - name: rca-org1-cert
+        - name: rca-hospital2-cert
           secret:
-            secretName: cert.rca-org1
+            secretName: cert.rca-hospital2
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: peer2-org1
+  name: peer0-hospital2
   namespace: hlf
   labels:
-    app: peer2-org1
+    app: peer0-hospital2
 spec:
   type: NodePort
   selector:
-    app: peer2-org1
+    app: peer0-hospital2
   ports:
     - name: core
       protocol: TCP
       port: 7051
-      nodePort: 30121
-    - name: chaincode                                                           
-      protocol: TCP                                                             
-      port: 7052    
+      nodePort: 30211
+    - name: chaincode
+      protocol: TCP
+      port: 7052

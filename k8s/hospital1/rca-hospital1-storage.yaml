@@ -2,9 +2,9 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   namespace: hlf
-  name: rca-org0-pv
+  name: rca-hospital1-pv
   labels:
-    app: rca-org0
+    app: rca-hospital1
 spec:
   storageClassName: manual
   capacity:
@@ -12,15 +12,15 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/mnt/hyperledger/storage/rca-org0"
+    path: "/mnt/hyperledger/storage/rca-hospital1"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   namespace: hlf
-  name: rca-org0-pvc
+  name: rca-hospital1-pvc
   labels:
-    app: rca-org0
+    app: rca-hospital1
 spec:
   storageClassName: manual
   accessModes:

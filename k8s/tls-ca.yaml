@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: tls-ca
-          image: hyperledger/fabric-ca:1.4.7
+          image: hyperledger/fabric-ca:1.5
           imagePullPolicy: IfNotPresent
           command: ["fabric-ca-server", "start", "-b", "$(BOOTSTRAP_USER):$(BOOTSTRAP_PASSWORD)", "--port", "7052"]
           lifecycle:
@@ -71,46 +71,46 @@ spec:
                 secretKeyRef:
                   name: credentials.tls.orderer-org0
                   key: password
-            - name: PEER1_ORG1_IDENTITY_USER
+            - name: PEER0_HOSPITAL1_IDENTITY_USER
               valueFrom:
                 secretKeyRef:
-                  name: credentials.tls.peer1-org1
+                  name: credentials.tls.peer0-hospital1
                   key: username
-            - name: PEER1_ORG1_IDENTITY_PASSWORD
+            - name: PEER0_HOSPITAL1_IDENTITY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials.tls.peer1-org1
+                  name: credentials.tls.peer0-hospital1
                   key: password
-            - name: PEER2_ORG1_IDENTITY_USER
+            # - name: PEER2_ORG1_IDENTITY_USER
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: credentials.tls.peer2-org1
+            #       key: username
+            # - name: PEER2_ORG1_IDENTITY_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: credentials.tls.peer2-org1
+            #       key: password
+            - name: PEER0_HOSPITAL2_IDENTITY_USER
               valueFrom:
                 secretKeyRef:
-                  name: credentials.tls.peer2-org1
+                  name: credentials.tls.peer0-hospital2
                   key: username
-            - name: PEER2_ORG1_IDENTITY_PASSWORD
+            - name: PEER0_HOSPITAL2_IDENTITY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials.tls.peer2-org1
+                  name: credentials.tls.peer0-hospital2
                   key: password
-            - name: PEER1_ORG2_IDENTITY_USER
-              valueFrom:
-                secretKeyRef:
-                  name: credentials.tls.peer1-org2
-                  key: username
-            - name: PEER1_ORG2_IDENTITY_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: credentials.tls.peer1-org2
-                  key: password
-            - name: PEER2_ORG2_IDENTITY_USER
-              valueFrom:
-                secretKeyRef:
-                  name: credentials.tls.peer2-org2
-                  key: username
-            - name: PEER2_ORG2_IDENTITY_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: credentials.tls.peer2-org2
-                  key: password
+            # - name: PEER2_ORG2_IDENTITY_USER
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: credentials.tls.peer2-org2
+            #       key: username
+            # - name: PEER2_ORG2_IDENTITY_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: credentials.tls.peer2-org2
+            #       key: password
       volumes:
         - name: tls-ca-persistent-mount 
           persistentVolumeClaim:

@@ -2,9 +2,9 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   namespace: hlf
-  name: peer1-org2-pv
+  name: peer0-hospital2-pv
   labels:
-    app: peer1-org2
+    app: peer0-hospital2
 spec:
   storageClassName: manual
   capacity:
@@ -12,15 +12,15 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/mnt/hyperledger/storage/peer1-org2"
+    path: "/mnt/hyperledger/storage/peer0-hospital2"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   namespace: hlf
-  name: peer1-org2-pvc
+  name: peer0-hospital2-pvc
   labels:
-    app: peer1-org2
+    app: peer0-hospital2
 spec:
   storageClassName: manual
   accessModes:
@@ -37,9 +37,9 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   namespace: hlf
-  name: peer1-org2-couchdb-pv
+  name: peer0-hospital2-couchdb-pv
   labels:
-    app: peer1-org2
+    app: peer0-hospital2
 spec:
   storageClassName: manual
   capacity:
@@ -47,15 +47,15 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/mnt/hyperledger/storage/peer1-org2-couchdb"
+    path: "/mnt/hyperledger/storage/peer0-hospital2-couchdb"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   namespace: hlf
-  name: peer1-org2-couchdb-pvc
+  name: peer0-hospital2-couchdb-pvc
   labels:
-    app: peer1-org2
+    app: peer0-hospital2
 spec:
   storageClassName: manual
   accessModes:
@@ -72,9 +72,9 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   namespace: hlf
-  name: peer1-org2-dind-pv
+  name: peer0-hospital2-dind-pv
   labels:
-    app: peer1-org2
+    app: peer0-hospital2
 spec:
   storageClassName: manual
   capacity:
@@ -82,15 +82,15 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/mnt/hyperledger/storage/peer1-org2-dind"
+    path: "/mnt/hyperledger/storage/peer0-hospital2-dind"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   namespace: hlf
-  name: peer1-org2-dind-pvc
+  name: peer0-hospital2-dind-pvc
   labels:
-    app: peer1-org2
+    app: peer0-hospital2
 spec:
   storageClassName: manual
   accessModes:

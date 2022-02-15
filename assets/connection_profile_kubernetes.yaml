@@ -14,7 +14,7 @@ x-loggingLevel: info
 #
 # Describe what the target network is/does.
 #
-description: "The UC4 production network."
+description: "The EHRConsortium dev network."
 
 #
 # Schema version of the content. Used by the SDK to apply the corresponding parsing rules.
@@ -22,7 +22,7 @@ description: "The UC4 production network."
 version: 1.2.0 # TODO
 
 client:
-  organization: org1
+  organization: Hospital1
   connection:
     timeout:
       peer:
@@ -41,11 +41,11 @@ channels:
     # operational decisions to share loads from applications among the orderers.  The values must
     # be "names" of orgs defined under "organizations/peers"
     orderers:
-      - orderer-org0
+      - orderer-orderermsp
 
     # Required. list of peers from participating orgs
     peers:
-      peer1-org1:
+      peer0-hospital1:
         # [Optional]. will this peer be sent transaction proposals for endorsement? The peer must
         # have the chaincode installed. The app can also use this property to decide which peers
         # to send the chaincode install request. Default: true
@@ -65,58 +65,58 @@ channels:
         # Default: true
         eventSource: true
 
-      peer2-org1:
+      # peer2-org1:
+      #   endorsingPeer: true
+      #   chaincodeQuery: true
+      #   ledgerQuery: true
+      #   eventSource: true
+
+      peer0-hospital2:
         endorsingPeer: true
         chaincodeQuery: true
         ledgerQuery: true
         eventSource: true
 
-      peer1-org2:
-        endorsingPeer: true
-        chaincodeQuery: true
-        ledgerQuery: true
-        eventSource: true
-
-      peer2-org2:
-        endorsingPeer: true
-        chaincodeQuery: true
-        ledgerQuery: true
-        eventSource: true
+      # peer2-org2:
+      #   endorsingPeer: true
+      #   chaincodeQuery: true
+      #   ledgerQuery: true
+      #   eventSource: true
 
 #
 # list of participating organizations in this network
 #
 organizations:
-  org1:
-    mspid: org1MSP
+  Hospital1:
+    mspid: Hospital1MSP
 
     # This org's MSP store (absolute path or relative to client.cryptoconfig)
     # cryptoPath:  peerOrganizations/org1.example.com/users/{username}@org1.example.com/msp
     # cryptoPath: "/tmp/hyperledger/org1/msp"
 
     peers:
-      - peer1-org1
-      - peer2-org1
+      - peer0-Hospital1MSP
+      # - peer2-org1
 
   # the profile will contain public information about organizations other than the one it belongs to.
   # These are necessary information to make transaction lifecycles work, including MSP IDs and
   # peers with a public URL to send transaction proposals. The file will not contain private
   # information reserved for members of the organization, such as admin key and certificate,
   # fabric-ca registrar enroll ID and secret, etc.
-  org2:
-    mspid: org2MSP
+  Hospital2:
+    mspid: Hospital2MSP
 
     # This org's MSP store (absolute path or relative to client.cryptoconfig)
     # cryptoPath: "/tmp/hyperledger/org2/msp"
 
     peers:
-      - peer1-org2
-      - peer2-org2
+      - peer0-hospital2
+      # - peer2-org2
 
   # Orderer Org name
-  org0:
+  OrdererOrg0:
     # Membership Service Provider ID for this organization
-    mspID: org0MSP
+    mspID: OrdererOrg0MSP
 
     # Needed to load users crypto keys and certs for this org (absolute path or relative to global crypto path, DEV mode)
     # cryptoPath: "/tmp/hyperledger/org0/msp"
@@ -148,67 +148,66 @@ orderers:
 #
 
 peers:
-  peer1-org1:
+  peer0-hospital1:
     # this URL is used to send endorsement and query requests
-    url: grpcs://peer1-org1.hlf:7051
+    url: grpcs://${UC4_KIND_NODE_IP}:30111
 
     grpcOptions:
-      ssl-target-name-override: peer1-org1
+      ssl-target-name-override: peer0-hospital1
       grpc.http2.keepalive_time: 15
       negotiationType: TLS
       sslProvider: openSSL
-      hostnameOverride: peer1-org1
+      hostnameOverride: peer0-hospital1
 
 
     tlsCACerts:
       # Certificate location absolute path
-      path: "/var/secrets/cert.pem"
+      path: "/tmp/hyperledger/ca-cert.pem"
 
-  peer2-org1:
+  # peer2-org1:
+  #   # this URL is used to send endorsement and query requests
+  #   url: grpcs://${UC4_KIND_NODE_IP}:30121
+
+
+  #   grpcOptions:
+  #     ssl-target-name-override: peer2-org1
+  #     grpc.http2.keepalive_time: 15
+  #     negotiationType: TLS
+  #     sslProvider: openSSL
+  #     hostnameOverride: peer2-org1
+
+
+
+    # tlsCACerts:
+    #   # Certificate location absolute path
+    #   path: "/tmp/hyperledger/ca-cert.pem"
+
+  peer0-hospital2:
     # this URL is used to send endorsement and query requests
-    url: grpcs://peer2-org1.hlf:7051
-
+    url: grpcs://${UC4_KIND_NODE_IP}:30211
 
     grpcOptions:
-      ssl-target-name-override: peer2-org1
+      ssl-target-name-override: peer0-hospital2
       grpc.http2.keepalive_time: 15
       negotiationType: TLS
       sslProvider: openSSL
-      hostnameOverride: peer2-org1
-
-
+      hostnameOverride: peer0-hospital2
 
     tlsCACerts:
       # Certificate location absolute path
-      path: "/var/secrets/cert.pem"
+      path: "/tmp/hyperledger/ca-cert.pem"
 
-  peer1-org2:
-    # this URL is used to send endorsement and query requests
-    url: grpcs://peer1-org2.hlf:7051
+  # peer2-org2:
+  #   # this URL is used to send endorsement and query requests
+  #   url: grpcs://${UC4_KIND_NODE_IP}:30221
 
-    grpcOptions:
-      ssl-target-name-override: peer1-org2
-      grpc.http2.keepalive_time: 15
-      negotiationType: TLS
-      sslProvider: openSSL
-      hostnameOverride: peer1-org2
+  #   grpcOptions:
+  #     ssl-target-name-override: peer2-org2
+  #     grpc.http2.keepalive_time: 15
+  #     negotiationType: TLS
+  #     sslProvider: openSSL
+  #     hostnameOverride: peer2-org2
 
-    tlsCACerts:
-      # Certificate location absolute path
-      path: "/var/secrets/cert.pem"
-
-  peer2-org2:
-    # this URL is used to send endorsement and query requests
-    url: grpcs://peer2-org2.hlf:7051
-
-    grpcOptions:
-      ssl-target-name-override: peer2-org2
-      grpc.http2.keepalive_time: 15
-      negotiationType: TLS
-      sslProvider: openSSL
-      hostnameOverride: peer2-org2
-
-    tlsCACerts:
-      # Certificate location absolute path
-      path: "/var/secrets/cert.pem"
-
+  #   tlsCACerts:
+  #     # Certificate location absolute path
+  #     path: "/tmp/hyperledger/ca-cert.pem"

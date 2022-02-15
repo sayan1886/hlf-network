@@ -3,15 +3,15 @@ distinguished_name = req_distinguished_name
 req_extensions = v3_req
 
 [req_distinguished_name]
-countryName = DE
-countryName_default = DE
-stateOrProvinceName = NRW
-stateOrProvinceName_default = NRW
-localityName = Paderborn
-localityName_default = Paderborn
-organizationalUnitName = UC4
-organizationalUnitName_default  = UC4
-commonName = rca-org2
+countryName = IN
+countryName_default = IN
+stateOrProvinceName = KA
+stateOrProvinceName_default = KA
+localityName = Bangalore
+localityName_default = Bangalore
+organizationalUnitName = EHR
+organizationalUnitName_default  = EHR
+commonName = rca-ordererorg0
 commonName_max = 64
 
 [ v3_req ]

@@ -1,31 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rca-org1
+  name: rca-hospital1
   namespace: hlf
   labels:
-    app: rca-org1
+    app: rca-hospital1
 spec:
   selector:
     matchLabels:
-      app: rca-org1
+      app: rca-hospital1
   template:
     metadata:
       labels:
-        app: rca-org1
+        app: rca-hospital1
     spec:
       containers:
-        - name: rca-org1
-          image: hyperledger/fabric-ca:1.4.7
+        - name: rca-hospital1
+          image: hyperledger/fabric-ca:1.5
           imagePullPolicy: IfNotPresent
           command: ["fabric-ca-server", "start", "-b", "$(BOOTSTRAP_USER):$(BOOTSTRAP_PASSWORD)", "--port", "7052"]
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/bash", "-c", "/tmp/hyperledger/scripts/startNetwork/registerUsers/registerOrg1CaUsers.sh"]
+                command: ["/bin/bash", "-c", "/tmp/hyperledger/scripts/startNetwork/registerUsers/registerHospital1CaUsers.sh"]
           volumeMounts:
             - mountPath: /tmp/hyperledger/fabric-ca/crypto
-              name: rca-org1-persistent-mount
+              name: rca-hospital1-persistent-mount
             - mountPath: /tmp/hyperledger/scripts
               name: scripts
             - mountPath: /tmp/secrets/cert.pem
@@ -42,9 +42,9 @@ spec:
             - name: FABRIC_CA_SERVER_TLS_ENABLED
               value: "true"
             - name: FABRIC_CA_SERVER_CSR_CN
-              value: "rca-org1"
+              value: "rca-hospital1"
             - name: FABRIC_CA_SERVER_CSR_HOSTS
-              value: "172.17.0.2,172.17.0.3,0.0.0.0,rca-org1.hlf,uc4.cs.uni-paderborn.de"
+              value: "172.17.0.2,172.17.0.3,0.0.0.0,rca-hospital1.hlf,uc4.cs.uni-paderborn.de"
             - name: FABRIC_CA_SERVER_DEBUG
               value: "true"
             - name: FABRIC_CA_SERVER_CA_CERTFILE
@@ -54,88 +54,88 @@ spec:
             - name: BOOTSTRAP_USER
               valueFrom:
                 secretKeyRef:
-                  name: credentials.rca-org1
+                  name: credentials.rca-hospital1
                   key: username
             - name: BOOTSTRAP_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials.rca-org1
+                  name: credentials.rca-hospital1
                   key: password
-            - name: PEER1_ORG1_IDENTITY_USER
+            - name: PEER0_HOSPITAL1_IDENTITY_USER
               valueFrom:
                 secretKeyRef:
-                  name: credentials.peer1-org1
+                  name: credentials.peer0-hospital1
                   key: username
-            - name: PEER1_ORG1_IDENTITY_PASSWORD
+            - name: PEER0_HOSPITAL1_IDENTITY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials.peer1-org1
+                  name: credentials.peer0-hospital1
                   key: password
-            - name: PEER2_ORG1_IDENTITY_USER
+            # - name: PEER2_ORG1_IDENTITY_USER
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: credentials.peer2-org1
+            #       key: username
+            # - name: PEER2_ORG1_IDENTITY_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: credentials.peer2-org1
+            #       key: password
+            - name: ADMIN_HOSPITAL1_IDENTITY_USER
               valueFrom:
                 secretKeyRef:
-                  name: credentials.peer2-org1
+                  name: credentials.admin-hospital1
                   key: username
-            - name: PEER2_ORG1_IDENTITY_PASSWORD
+            - name: ADMIN_HOSPITAL1_IDENTITY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials.peer2-org1
+                  name: credentials.admin-hospital1
                   key: password
-            - name: ADMIN_ORG1_IDENTITY_USER
+            - name: SCALA_ADMIN_HOSPITAL1_IDENTITY_USER
               valueFrom:
                 secretKeyRef:
-                  name: credentials.admin-org1
+                  name: credentials.scala-admin-hospital1
                   key: username
-            - name: ADMIN_ORG1_IDENTITY_PASSWORD
+            - name: SCALA_ADMIN_HOSPITAL1_IDENTITY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials.admin-org1
+                  name: credentials.scala-admin-hospital1
                   key: password
-            - name: SCALA_ADMIN_ORG1_IDENTITY_USER
+            - name: SCALA_REGISTRATION_ADMIN_HOSPITAL1_IDENTITY_USER
               valueFrom:
                 secretKeyRef:
-                  name: credentials.scala-admin-org1
+                  name: credentials.scala-registration-admin-hospital1
                   key: username
-            - name: SCALA_ADMIN_ORG1_IDENTITY_PASSWORD
+            - name: SCALA_REGISTRATION_ADMIN_HOSPITAL1_IDENTITY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials.scala-admin-org1
-                  key: password
-            - name: SCALA_REGISTRATION_ADMIN_ORG1_IDENTITY_USER
-              valueFrom:
-                secretKeyRef:
-                  name: credentials.scala-registration-admin-org1
-                  key: username
-            - name: SCALA_REGISTRATION_ADMIN_ORG1_IDENTITY_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: credentials.scala-registration-admin-org1
+                  name: credentials.scala-registration-admin-hospital1
                   key: password
       volumes:
-        - name: rca-org1-persistent-mount 
+        - name: rca-hospital1-persistent-mount 
           persistentVolumeClaim:
-            claimName: rca-org1-pvc
+            claimName: rca-hospital1-pvc
         - name: scripts
           hostPath:
             path: /mnt/hyperledger/scripts
         - name: cert
           secret:
-            secretName: cert.rca-org1
+            secretName: cert.rca-hospital1
         - name: key
           secret:
-            secretName: key.rca-org1
+            secretName: key.rca-hospital1
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rca-org1
+  name: rca-hospital1
   namespace: hlf
   labels:
-    app: rca-org1
+    app: rca-hospital1
 spec:
   type: NodePort
   selector:
-    app: rca-org1
+    app: rca-hospital1
   ports:
     - name: https
       protocol: TCP

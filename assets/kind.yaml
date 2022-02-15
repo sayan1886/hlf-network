@@ -10,7 +10,7 @@ nodes:
         kind: JoinConfiguration
         nodeRegistration:
           kubeletExtraArgs:
-            node-labels: "uc4.cs.upb.de/kind-worker"
+            node-labels: "ehr-consortium/kind-worker"
   - role: control-plane
     extraMounts:
       - hostPath: /data/development/hyperledger
